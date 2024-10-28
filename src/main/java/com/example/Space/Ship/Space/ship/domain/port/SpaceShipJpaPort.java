@@ -1,8 +1,6 @@
 package com.example.Space.Ship.Space.ship.domain.port;
 
 import com.example.Space.Ship.Space.ship.domain.model.SpaceShip;
-import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.SpaceShipDto;
-import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.request.SpaceShipRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

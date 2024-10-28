@@ -7,6 +7,7 @@ import com.example.Space.Ship.Space.ship.infraestructure.redis.CacheService;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.SpaceShipDto;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.request.SpaceShipRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class SpaceShipService implements SpaceShipUseCases {
     private final SpaceShipDtoMapper spaceShipDtoMapper;
     private final CacheService cacheService;
 
-
+    @Autowired
     public SpaceShipService(SpaceShipJpaPort spaceShipJpaPort, SpaceShipDtoMapper spaceShipDtoMapper, CacheService cacheService) {
         this.spaceShipJpaPort = spaceShipJpaPort;
         this.spaceShipDtoMapper = spaceShipDtoMapper;

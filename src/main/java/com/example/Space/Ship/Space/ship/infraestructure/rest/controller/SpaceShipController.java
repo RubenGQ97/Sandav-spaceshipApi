@@ -2,7 +2,6 @@ package com.example.Space.Ship.Space.ship.infraestructure.rest.controller;
 
 
 import com.example.Space.Ship.Space.ship.application.service.SpaceShipService;
-import com.example.Space.Ship.Space.ship.domain.model.SpaceShip;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.SpaceShipDto;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.request.SpaceShipRequest;
 import jakarta.validation.Valid;

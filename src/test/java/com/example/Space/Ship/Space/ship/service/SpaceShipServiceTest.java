@@ -13,11 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.RedisConnectionFailureException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,18 +30,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
+@SpringBootTest
 class SpaceShipServiceTest {
 
-    @Mock
+    @MockBean
     private SpaceShipJpaPort spaceShipJpaPort;
 
-    @Mock
+    @Autowired
     private SpaceShipDtoMapper spaceShipDtoMapper;
 
-    @Mock
-    private CacheService cacheService;
-
-    @InjectMocks
+    @Autowired
     private SpaceShipService spaceShipService;
 
     private SpaceShiptTestUtils spaceShiptTestUtils;
@@ -48,7 +52,7 @@ class SpaceShipServiceTest {
     }
 
     @Test
-    void GetAllShipsWithOutAnyShipTest() {
+    void getAllShipsWithOutAnyShipTest() {
         Page<SpaceShip> expectedResult = new PageImpl<>(List.of());
 
         when(spaceShipJpaPort.getAllShips(any(Pageable.class))).thenReturn(expectedResult);
@@ -61,7 +65,7 @@ class SpaceShipServiceTest {
     }
 
     @Test
-    void GetAllShipsTest() {
+    void getAllShipsTest() {
         var listOfShips = spaceShiptTestUtils.generateSpaceShips(5);
 
         Page<SpaceShip> expectedResult = new PageImpl<>(listOfShips);
@@ -75,79 +79,32 @@ class SpaceShipServiceTest {
         verify(spaceShipJpaPort, times(1)).getAllShips(any(Pageable.class));
     }
 
-
-    // 2. Test getSpaceShipById
     @Test
-    void testGetSpaceShipById() {
+    void getSpaceShipByIdtest() {
+        var ship = spaceShiptTestUtils.generateSpaceShips(1).get(0);
 
-        //when(spaceShipJpaPort.getSpaceShipById(anyInt())).thenReturn(Optional.of(new SpaceShipDto()));
+        when(spaceShipJpaPort.getSpaceShipById(eq(1))).thenReturn(ship);
 
-        SpaceShipDto result = spaceShipService.getSpaceShipById(5);
-
+        var result = spaceShipService.getSpaceShipById(5);
+        assertNull(result);
+        result = spaceShipService.getSpaceShipById(1);
         assertNotNull(result);
-        verify(spaceShipJpaPort, times(1)).getSpaceShipById(5);
+        assertEquals(result.getName(),ship.getName());
+
     }
-/*
-    // 3. Test findShipsByName
+
     @Test
-    void testFindShipsByName_ReturnsList() {
-        List<SpaceShipDto> ships = List.of(new SpaceShipDto());
-        when(spaceShipJpaPort.findShipsByName(anyString())).thenReturn(ships);
+    void findShipsByNameTest() {
+        var ship = spaceShiptTestUtils.generateSpaceShips(2);
 
-        List<SpaceShipDto> result = spaceShipService.findShipsByName("Falcon");
+        when(spaceShipJpaPort.findShipsByName(eq("SpaceShip"))).thenReturn(ship);
 
+        var result = spaceShipService.findShipsByName("aaa");
+        assertTrue(result.isEmpty());
+        result = spaceShipService.findShipsByName("SpaceShip");
         assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(spaceShipJpaPort, times(1)).findShipsByName("Falcon");
+        assertEquals(result.size(),2);
+        assertTrue(result.stream().allMatch(spaceShipDto -> spaceShipDto.getName().contains("SpaceShip")));
     }
 
-    // 4. Test createSpaceShip
-    @Test
-    void testCreateSpaceShip_CallsClearCaches() {
-        SpaceShipRequest request = new SpaceShipRequest();
-        SpaceShipDto spaceShipDto = new SpaceShipDto();
-
-        when(spaceShipDtoMapper.toDomain(any(SpaceShipRequest.class))).thenReturn(spaceShipDto);
-        when(spaceShipJpaPort.createSpaceShip(any())).thenReturn(spaceShipDto);
-
-        spaceShipService.createSpaceShip(request);
-
-        verify(spaceShipJpaPort, times(1)).createSpaceShip(spaceShipDto);
-        verify(cacheService, times(1)).clearCaches();
-    }
-
-    // 5. Test updateSpaceShip
-    @Test
-    void testUpdateSpaceShip_CallsClearCaches() {
-        SpaceShipRequest request = new SpaceShipRequest();
-        SpaceShipDto spaceShipDto = new SpaceShipDto();
-
-        when(spaceShipDtoMapper.toDomain(any(SpaceShipRequest.class))).thenReturn(spaceShipDto);
-        when(spaceShipJpaPort.updateSpaceShip(any())).thenReturn(spaceShipDto);
-
-        spaceShipService.updateSpaceShip(5, request);
-
-        verify(spaceShipJpaPort, times(1)).updateSpaceShip(spaceShipDto);
-        verify(cacheService, times(1)).clearCaches();
-    }
-
-    // 6. Test deleteSpaceShip
-    @Test
-    void testDeleteSpaceShip_CallsClearCaches() {
-        when(spaceShipJpaPort.deleteSpaceShip(anyInt())).thenReturn(true);
-
-        Boolean result = spaceShipService.deleteSpaceShip(5);
-
-        assertTrue(result);
-        verify(spaceShipJpaPort, times(1)).deleteSpaceShip(5);
-        verify(cacheService, times(1)).clearCaches();
-    }
-
-    // 7. Test Cache Service with Exception
-    @Test
-    void testCacheClear_ThrowsRedisConnectionFailureException() {
-        doThrow(new RedisConnectionFailureException("Redis error")).when(cacheService).clearCaches();
-
-        assertDoesNotThrow(() -> spaceShipService.createSpaceShip(new SpaceShipRequest()));
-    }*/
 }

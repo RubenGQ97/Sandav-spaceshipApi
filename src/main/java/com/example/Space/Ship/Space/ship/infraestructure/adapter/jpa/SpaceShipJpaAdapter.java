@@ -5,8 +5,6 @@ import com.example.Space.Ship.Space.ship.domain.port.SpaceShipJpaPort;
 import com.example.Space.Ship.Space.ship.infraestructure.adapter.exception.SpaceShipException;
 import com.example.Space.Ship.Space.ship.infraestructure.adapter.mapper.SpaceShipMapper;
 import com.example.Space.Ship.Space.ship.infraestructure.adapter.repository.SpaceShipRepository;
-import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.request.SpaceShipRequest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
