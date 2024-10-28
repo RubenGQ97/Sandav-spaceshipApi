@@ -11,8 +11,8 @@ services:
     depends_on:
       - redis-spaceship
     environment:
-      - SPRING_PROFILES_ACTIVE: docker
-      - REDIS_HOST=redis-spaceship
+      SPRING_PROFILES_ACTIVE: docker
+      REDIS_HOST: redis-spaceship
     networks:
       - app-network
 
