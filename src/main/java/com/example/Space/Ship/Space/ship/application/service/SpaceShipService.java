@@ -31,7 +31,7 @@ public class SpaceShipService implements SpaceShipUseCases {
 
 
     @Override
-    @Cacheable(value = "allSpaceships", key = "#pageable.pageNumber")
+    @Cacheable(value = "allSpaceships", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     @CircuitBreaker(name = "redisCircuitBreaker", fallbackMethod = "getAllShipsFallBack")
     public Page<SpaceShipDto> getAllShips(Pageable pageable) {
         var shipList = spaceShipJpaPort.getAllShips(pageable);

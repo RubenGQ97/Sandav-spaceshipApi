@@ -9,14 +9,14 @@ spring:
   redis:
     host: localhost
     port: 6379
-    timeout: 10ms
+    timeout: 500ms
     time-to.live: 30000
     lettuce:
       pool:
         max-active: 8
         max-idle: 8
         min-idle: 0
-      shutdown-timeout: 10ms
+      shutdown-timeout: 200ms
   cache:
     type: redis
   datasource:
@@ -35,13 +35,13 @@ resilience4j:
   circuitbreaker:
     instances:
       redisCircuitBreaker:
-        failure-rate-threshold: 50  # Se abre el circuito si el 50% de las llamadas fallan
-        wait-duration-in-open-state: 30s  # Mantiene el circuito abierto durante 30 segundos antes de probar de nuevo
-        ring-buffer-size-in-half-open-state: 2  # Permite solo una llamada de prueba en estado semiabierto
-        ring-buffer-size-in-closed-state: 10  # Controla las últimas 5 solicitudes en estado cerrado para una rápida evaluación de fallos
-        minimum-number-of-calls: 10  # Llama al menos 5 veces antes de activar el circuito si hay fallos
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        ring-buffer-size-in-half-open-state: 2
+        ring-buffer-size-in-closed-state: 10
+        minimum-number-of-calls: 10
   retry:
     instances:
       redisCircuitBreaker:
-        max-attempts: 1  # Asegura que no haya reintentos adicionales
+        max-attempts: 1
         wait-duration: 0
