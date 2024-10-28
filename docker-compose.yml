@@ -13,6 +13,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       REDIS_HOST: redis-spaceship
+      KAFKA_BOOTSTRAP_SERVERS: kafka-spaceship:9092
     networks:
       - app-network
 
@@ -21,6 +22,31 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    networks:
+      - app-network
+
+  zookeeper-spaceship:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+
+  kafka-spaceship:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-spaceship:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-spaceship:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"
+    depends_on:
+       - zookeeper-spaceship
     networks:
       - app-network
 

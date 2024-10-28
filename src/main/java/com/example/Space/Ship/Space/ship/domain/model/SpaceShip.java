@@ -16,4 +16,16 @@ public class SpaceShip {
     private String manufacturer;
     private String film;
     private String urlImg;
+
+    @Override
+    public String toString() {
+        return "SpaceShip{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", model='" + model + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", film='" + film + '\'' +
+                ", urlImg='" + urlImg + '\'' +
+                '}';
+    }
 }

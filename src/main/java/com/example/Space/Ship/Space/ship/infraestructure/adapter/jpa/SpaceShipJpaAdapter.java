@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.Space.Ship.Space.ship.domain.model.constant.SpaceShipCostant.SPACESHIP_ALREADY_EXISTS;
-import static com.example.Space.Ship.Space.ship.domain.model.constant.SpaceShipCostant.SPACESHIP_NOT_FOUND_ERROR;
+import static com.example.Space.Ship.Space.ship.domain.model.constant.SpaceShipCostant.*;
 
 
 @Service
@@ -71,7 +70,10 @@ public class SpaceShipJpaAdapter implements SpaceShipJpaPort {
         var shipToUpdate= spaceShipMapper.toEntity(spaceShip);
 
         return spaceShipRepository.findById(shipToUpdate.getId()).map(
-                spaceShipEntity -> {
+                actualShipEntity -> {
+                    if(actualShipEntity.getName().compareTo(shipToUpdate.getName()) !=0 ){
+                        if(spaceShipRepository.existsByName(shipToUpdate.getName()))throw new SpaceShipException(HttpStatus.BAD_REQUEST,SPACESHIPNAME_ALREADY_EXISTS);
+                    }
                     var shipUpdated = spaceShipRepository.save(shipToUpdate);
                     return spaceShipMapper.toDomain(shipUpdated);
                 }).orElseThrow(() ->

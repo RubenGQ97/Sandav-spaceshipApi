@@ -22,4 +22,14 @@ public class SpaceShipRequest {
     @Size(min = 1, max = 50, message = "The name must be between 1 and 50 characters")
     @NotNull(message = "couldnt be null")
     private String film;
+
+    @Override
+    public String toString() {
+        return "SpaceShipRequest{" +
+                "name='" + name + '\'' +
+                ", model='" + model + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", film='" + film + '\'' +
+                '}';
+    }
 }

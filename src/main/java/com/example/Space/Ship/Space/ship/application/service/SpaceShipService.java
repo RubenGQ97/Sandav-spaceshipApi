@@ -3,6 +3,7 @@ package com.example.Space.Ship.Space.ship.application.service;
 import com.example.Space.Ship.Space.ship.application.mapper.SpaceShipDtoMapper;
 import com.example.Space.Ship.Space.ship.application.usecases.SpaceShipUseCases;
 import com.example.Space.Ship.Space.ship.domain.port.SpaceShipJpaPort;
+import com.example.Space.Ship.Space.ship.infraestructure.Kafka.KafkaProducer;
 import com.example.Space.Ship.Space.ship.infraestructure.redis.CacheService;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.SpaceShipDto;
 import com.example.Space.Ship.Space.ship.infraestructure.rest.dto.request.SpaceShipRequest;
@@ -22,12 +23,14 @@ public class SpaceShipService implements SpaceShipUseCases {
     private final SpaceShipJpaPort spaceShipJpaPort;
     private final SpaceShipDtoMapper spaceShipDtoMapper;
     private final CacheService cacheService;
+    private final KafkaProducer kafkaProducer;
 
     @Autowired
-    public SpaceShipService(SpaceShipJpaPort spaceShipJpaPort, SpaceShipDtoMapper spaceShipDtoMapper, CacheService cacheService) {
+    public SpaceShipService(SpaceShipJpaPort spaceShipJpaPort, SpaceShipDtoMapper spaceShipDtoMapper, CacheService cacheService, KafkaProducer kafkaProducer) {
         this.spaceShipJpaPort = spaceShipJpaPort;
         this.spaceShipDtoMapper = spaceShipDtoMapper;
         this.cacheService = cacheService;
+        this.kafkaProducer = kafkaProducer;
     }
 
 
@@ -65,6 +68,7 @@ public class SpaceShipService implements SpaceShipUseCases {
         var shipToCreate = spaceShipDtoMapper.toDomain(spaceShipRequest);
         var shipCreated = spaceShipJpaPort.createSpaceShip(shipToCreate);
         cacheService.clearCaches();
+        kafkaProducer.sendMessage("Se ha creado la nave: "+shipCreated.toString());
         return spaceShipDtoMapper.toDto(shipCreated);
     }
 
@@ -74,6 +78,7 @@ public class SpaceShipService implements SpaceShipUseCases {
         shipToUpdate.setId(id);
         var shipUpdated = spaceShipJpaPort.updateSpaceShip(shipToUpdate);
         cacheService.clearCaches();
+        kafkaProducer.sendMessage("Se ha actualizado la nave: { "+shipToUpdate+" } Ahora su valor es: "+shipUpdated.toString());
         return spaceShipDtoMapper.toDto(shipUpdated);
     }
 
@@ -81,6 +86,7 @@ public class SpaceShipService implements SpaceShipUseCases {
     public Boolean deleteSpaceShip(int id) {
         var isDeleted = spaceShipJpaPort.deleteSpaceShip(id);
         cacheService.clearCaches();
+        kafkaProducer.sendMessage("Se ha eliminado la nave con el id: "+id);
         return isDeleted;
     }
 

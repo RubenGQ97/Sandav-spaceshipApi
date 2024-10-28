@@ -45,3 +45,18 @@ resilience4j:
       redisCircuitBreaker:
         max-attempts: 1
         wait-duration: 0
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: space-ship-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    template:
+      default-topic: space-ship-topic

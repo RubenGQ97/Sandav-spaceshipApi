@@ -1,6 +1,7 @@
 package com.example.Space.Ship.Space.ship.infraestructure.rest.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -13,4 +14,16 @@ public class SpaceShipDto implements Serializable {
     private String manufacturer;
     private String film;
     private String urlImg;
+
+    @Override
+    public String toString() {
+        return "SpaceShipDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", model='" + model + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", film='" + film + '\'' +
+                ", urlImg='" + urlImg + '\'' +
+                '}';
+    }
 }
